@@ -109,6 +109,27 @@
     font-weight: bold;
     border-radius: 12px;
   }
+  .app-footer {
+  margin-top: 30px;
+  padding: 12px 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #777;
+  border-top: 1px solid #e0e0e0;
+}
+
+.app-footer span {
+  font-weight: 600;
+  color: #444;
+}
+
+/* Mobile friendly */
+@media (max-width: 600px) {
+  .app-footer {
+    font-size: 13px;
+    padding: 10px 6px;
+  }
+}
 
   .green { background: #dcfce7; color: #166534; }
   .red { background: #fee2e2; color: #991b1b; }
@@ -155,6 +176,9 @@
 
   <div id="targetResult" class="result"></div>
   <button class="main delete" onclick="clearAll()">Clear All Data</button>
+  <footer class="app-footer">
+  <p>Developed by <span>Dheeraj Koila</span></p>
+</footer>
 </div>
 </div>
 

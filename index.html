@@ -19,7 +19,7 @@
   }
 
   .container {
-    max-width: 700px;
+    max-width: 750px;
     margin: auto;
   }
 
@@ -31,10 +31,15 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
   }
 
-  .header-row {
+  .header-row,
+  .row {
     display: grid;
-    grid-template-columns: 0.4fr 1.4fr 0.6fr 0.6fr;
+    grid-template-columns: 0.4fr 1.4fr 0.6fr 0.6fr 0.4fr;
     gap: 8px;
+    align-items: center;
+  }
+
+  .header-row {
     font-weight: 600;
     font-size: 14px;
     color: #374151;
@@ -42,11 +47,7 @@
   }
 
   .row {
-    display: grid;
-    grid-template-columns: 0.4fr 1.4fr 0.6fr 0.6fr;
-    gap: 8px;
     margin-bottom: 10px;
-    align-items: center;
   }
 
   .index {
@@ -67,7 +68,25 @@
     border-color: #2563eb;
   }
 
-  button {
+  .fail {
+    background: #fee2e2;
+  }
+
+  .fail input {
+    border-color: #dc2626;
+  }
+
+  .delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  button.main {
     width: 100%;
     padding: 14px;
     border-radius: 12px;
@@ -98,9 +117,6 @@
     .header-row, .row {
       grid-template-columns: 1fr;
     }
-    .index {
-      text-align: left;
-    }
   }
 </style>
 </head>
@@ -113,42 +129,77 @@
   <div class="card">
     <h2>Subjects</h2>
 
-      
-  
-
+    
     <div id="subjects"></div>
 
-    <button class="add" onclick="addSubject()">➕ Add Subject</button>
-    <button class="sgpa" onclick="calculateSGPA()">Calculate SGPA</button>
+    <button class="main add" onclick="addSubject()">➕ Add Subject</button>
+    <button class="main sgpa" onclick="calculateSGPA()">Calculate SGPA</button>
     <div id="sgpaResult" class="result"></div>
   </div>
 
   <div class="card">
     <h2>CGPA (from SGPAs)</h2>
     <input id="cgpaInput" placeholder="Example: 7.8, 8.2, 6.9">
-    <button class="cgpa" onclick="calculateCGPA()">Calculate CGPA</button>
+    <button class="main cgpa" onclick="calculateCGPA()">Calculate CGPA</button>
     <div id="cgpaResult" class="result"></div>
   </div>
+  <div class="card">
+  <h2>🎯 Target CGPA Planner</h2>
+
+  <input id="currentCgpa" type="number" step="0.01" placeholder="Current CGPA (e.g. 7.2)">
+  <input id="semCompleted" type="number" placeholder="Semesters Completed (e.g. 4)">
+  <input id="targetCgpa" type="number" step="0.01" placeholder="Target CGPA (e.g. 8.0)">
+  <input id="totalSem" type="number" value="8" placeholder="Total Semesters">
+
+  <button class="main cgpa" onclick="calculateTarget()">Calculate Required SGPA</button>
+
+  <div id="targetResult" class="result"></div>
+  <button class="main delete" onclick="clearAll()">Clear All Data</button>
+</div>
 </div>
 
 <script>
-  let count = 0;
+  function addSubject(data = {}) {
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML = `
+    <div class="index"></div>
+    <input placeholder="Subject" value="${data.subject || ""}">
+    <input type="number" placeholder="Credits" value="${data.credits || ""}">
+    <input type="number" placeholder="Marks" value="${data.marks || ""}" oninput="checkFail(this)">
+    <button class="delete" onclick="deleteRow(this)">✖</button>
+  `;
 
-  function addSubject() {
-    count++;
-    const row = document.createElement("div");
-    row.className = "row";
-    row.innerHTML = `
-      <div class="index">${count}</div>
-      <input placeholder="Subject ${count}">
-      <input type="number" placeholder="Credits">
-      <input type="number" placeholder="Marks">
-    `;
-    document.getElementById("subjects").appendChild(row);
-    setupEnterNavigation();
+  row.querySelectorAll("input").forEach(inp => {
+    inp.addEventListener("input", saveData);
+  });
+
+  document.getElementById("subjects").appendChild(row);
+  reorder();
+  setupEnterNavigation();
+  saveData();
+}
+
+  function deleteRow(btn) {
+    btn.parentElement.remove();
+    reorder();
+    saveData();
   }
 
-  addSubject();
+  function reorder() {
+    document.querySelectorAll(".index").forEach((el, i) => {
+      el.textContent = i + 1;
+    });
+  }
+
+  function checkFail(input) {
+    const row = input.parentElement;
+    if (Number(input.value) < 40 && input.value !== "") {
+      row.classList.add("fail");
+    } else {
+      row.classList.remove("fail");
+    }
+  }
 
   function setupEnterNavigation() {
     const inputs = document.querySelectorAll("#subjects input");
@@ -214,6 +265,97 @@
     el.textContent = text;
     el.className = "result " + (value >= 7 ? "green" : "red");
   }
+  function calculateTarget() {
+  const current = Number(document.getElementById("currentCgpa").value);
+  const done = Number(document.getElementById("semCompleted").value);
+  const target = Number(document.getElementById("targetCgpa").value);
+  const total = Number(document.getElementById("totalSem").value);
+
+  const resultBox = document.getElementById("targetResult");
+
+  if (
+    current <= 0 || target <= 0 ||
+    done <= 0 || total <= 0 ||
+    done >= total
+  ) {
+    resultBox.textContent = "Please enter valid values";
+    resultBox.className = "result red";
+    return;
+  }
+
+  const required =
+    ((target * total) - (current * done)) / (total - done);
+
+  if (required <= 0) {
+    resultBox.textContent = "🎉 Target already achievable with current CGPA";
+    resultBox.className = "result green";
+    return;
+  }
+
+  if (required > 10) {
+    resultBox.textContent =
+      "❌ Target CGPA not realistically achievable (Required SGPA > 10)";
+    resultBox.className = "result red";
+    return;
+  }
+
+  let levelClass = "green";
+  if (required > 7) levelClass = "yellow";
+  if (required > 8.5) levelClass = "red";
+
+  resultBox.textContent =
+    "Required Average SGPA: " + required.toFixed(2);
+
+  resultBox.className = "result " + levelClass;
+}
+function saveData() {
+  const subjects = [];
+  document.querySelectorAll("#subjects .row").forEach(r => {
+    subjects.push({
+      subject: r.children[1].value,
+      credits: r.children[2].value,
+      marks: r.children[3].value
+    });
+  });
+
+  localStorage.setItem("subjects", JSON.stringify(subjects));
+  localStorage.setItem("cgpaInput", document.getElementById("cgpaInput")?.value || "");
+  localStorage.setItem("currentCgpa", document.getElementById("currentCgpa")?.value || "");
+  localStorage.setItem("semCompleted", document.getElementById("semCompleted")?.value || "");
+  localStorage.setItem("targetCgpa", document.getElementById("targetCgpa")?.value || "");
+  localStorage.setItem("totalSem", document.getElementById("totalSem")?.value || "");
+}
+window.onload = () => {
+  const savedSubjects = JSON.parse(localStorage.getItem("subjects") || "[]");
+
+  if (savedSubjects.length) {
+    document.getElementById("subjects").innerHTML = "";
+    savedSubjects.forEach(s => addSubject(s));
+  } else {
+    addSubject();
+  }
+
+  document.getElementById("cgpaInput").value =
+    localStorage.getItem("cgpaInput") || "";
+
+  document.getElementById("currentCgpa").value =
+    localStorage.getItem("currentCgpa") || "";
+
+  document.getElementById("semCompleted").value =
+    localStorage.getItem("semCompleted") || "";
+
+  document.getElementById("targetCgpa").value =
+    localStorage.getItem("targetCgpa") || "";
+
+  document.getElementById("totalSem").value =
+    localStorage.getItem("totalSem") || "8";
+};
+function clearAll() {
+  if (confirm("This will delete all saved data. Continue?")) {
+    localStorage.clear();
+    location.reload();
+  }
+}
 </script>
 
 </body>

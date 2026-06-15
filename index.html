@@ -1,291 +1,713 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Inter+Tight:wght@400;600;700;800&display=swap" rel="stylesheet">
-<title>VTU SGPA & CGPA Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<title>Dheeraj's Calculation</title>
 
 <style>
+  :root {
+    --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --transition-speed: 0.3s;
+  }
+
+  /* Dark Theme variables */
+  [data-theme="dark"] {
+    --bg-app: #0b0f19;
+    --bg-gradient: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+                   radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 45%),
+                   #0b0f19;
+    --bg-card: rgba(17, 24, 39, 0.7);
+    --border-card: rgba(255, 255, 255, 0.08);
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
+    
+    --input-bg: rgba(31, 41, 55, 0.5);
+    --input-border: rgba(255, 255, 255, 0.08);
+    --input-focus-border: #6366f1;
+    --input-focus-shadow: rgba(99, 102, 241, 0.25);
+    
+    --shadow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+    
+    /* Button gradients */
+    --btn-add-bg: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    --btn-add-hover: linear-gradient(135deg, #5a52e6 0%, #8b5cf6 100%);
+    --btn-add-shadow: rgba(99, 102, 241, 0.3);
+    
+    --btn-sgpa-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --btn-sgpa-hover: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    --btn-sgpa-shadow: rgba(16, 185, 129, 0.3);
+    
+    --btn-cgpa-bg: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    --btn-cgpa-hover: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    --btn-cgpa-shadow: rgba(124, 58, 237, 0.3);
+    
+    --btn-delete-bg: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    --btn-delete-hover: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    --btn-delete-shadow: rgba(239, 68, 68, 0.3);
+
+    --card-title-color: #f3f4f6;
+    --footer-bg: rgba(17, 24, 39, 0.6);
+    --footer-border: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Light Theme variables */
+  [data-theme="light"] {
+    --bg-app: #f4f6fa;
+    --bg-gradient: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 45%),
+                   radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 45%),
+                   #f4f6fa;
+    --bg-card: rgba(255, 255, 255, 0.85);
+    --border-card: rgba(0, 0, 0, 0.06);
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    
+    --input-bg: rgba(248, 250, 252, 0.9);
+    --input-border: rgba(0, 0, 0, 0.08);
+    --input-focus-border: #4f46e5;
+    --input-focus-shadow: rgba(79, 70, 229, 0.15);
+    
+    --shadow-card: 0 20px 40px -20px rgba(0, 0, 0, 0.08), 0 1px 0 0 rgba(255, 255, 255, 0.5) inset;
+    
+    /* Button gradients */
+    --btn-add-bg: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    --btn-add-hover: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
+    --btn-add-shadow: rgba(79, 70, 229, 0.15);
+    
+    --btn-sgpa-bg: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --btn-sgpa-hover: linear-gradient(135deg, #059669 0%, #047857 100%);
+    --btn-sgpa-shadow: rgba(16, 185, 129, 0.15);
+    
+    --btn-cgpa-bg: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    --btn-cgpa-hover: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+    --btn-cgpa-shadow: rgba(124, 58, 237, 0.15);
+    
+    --btn-delete-bg: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    --btn-delete-hover: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    --btn-delete-shadow: rgba(239, 68, 68, 0.15);
+
+    --card-title-color: #0f172a;
+    --footer-bg: rgba(255, 255, 255, 0.8);
+    --footer-border: rgba(0, 0, 0, 0.04);
+  }
+
   body {
-    font-family: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: var(--font-body);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
     margin: 0;
-    padding: 20px;
+    padding: 24px 20px 60px;
     min-height: 100vh;
-    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: hidden;
   }
 
-  h1, h2 {
-    text-align: center;
-    color: #000000;
-    font-weight: 700;
-    letter-spacing: -0.05em;
-    line-height: 1.1;
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-gradient);
+    z-index: -2;
+    pointer-events: none;
   }
 
-  h1 {
-    font-size: 2.8em;
-    margin-bottom: 10px;
-    font-weight: 800;
-    letter-spacing: -0.06em;
+  *, *::before, *::after {
+    box-sizing: border-box;
   }
 
-  h2 {
-    font-size: 2em;
-    margin-bottom: 20px;
-    font-weight: 700;
-    letter-spacing: -0.04em;
+  body, .card, .input-field, .theme-toggle, .app-footer, .subjects-row, .index-badge, .grade-badge {
+    transition: background-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1), 
+                color var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .container {
-    max-width: 800px;
-    margin: auto;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
   }
 
-  .card {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 24px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .header-row,
-  .row {
-    display: grid;
-    grid-template-columns: 0.4fr 1.4fr 0.6fr 0.6fr 0.4fr;
-    gap: 8px;
+  /* Header Styles */
+  .app-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-card);
   }
 
-  .header-row {
-    font-weight: 600;
-    font-size: 14px;
-    color: #374151;
-    margin-bottom: 8px;
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  .row {
-    margin-bottom: 10px;
+  .logo-icon {
+    color: #6366f1;
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.4));
   }
 
-  .index {
-    text-align: center;
-    font-weight: 600;
-    color: #2563eb;
+  .app-header h1 {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--text-primary) 50%, var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
+  .theme-toggle {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-card);
+    color: var(--text-primary);
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="dark"] .sun-icon { display: block; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="light"] .moon-icon { display: block; }
+
+  /* Dashboard Layout */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 950px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Card */
+  .card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-card);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    opacity: 0.8;
+  }
+
+  .card.card-sgpa::after { background: linear-gradient(90deg, #10b981, #059669); }
+  .card.card-cgpa::after { background: linear-gradient(90deg, #7c3aed, #6d28d9); }
+  .card.card-planner::after { background: linear-gradient(90deg, #f59e0b, #eab308); }
+
+  .card h2 {
+    font-family: var(--font-display);
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--card-title-color);
+    margin-top: 0;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .card h2 svg {
+    color: var(--text-secondary);
+  }
+
+  /* Inputs & Form styling */
   .input-group {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   .input-group label {
     display: block;
+    font-size: 13px;
     font-weight: 600;
-    color: #374151;
-    margin-bottom: 6px;
-    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
-  .input-group input {
+  .input-field {
     width: 100%;
-    padding: 14px;
+    padding: 13px 16px;
     border-radius: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.9);
-    transition: all 0.3s ease;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+  }
+
+  .input-field:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 3px var(--input-focus-shadow);
+    background-color: var(--bg-card);
+  }
+
+  .input-field::placeholder {
+    color: var(--text-tertiary);
+    font-style: italic;
+  }
+
+  /* Grid/List of subjects */
+  .subjects-header-row {
+    display: grid;
+    grid-template-columns: 2.2rem 1.6fr 0.8fr 0.8fr 1.2fr 2.2rem;
+    gap: 12px;
+    align-items: center;
+    padding: 0 12px 10px;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border-card);
+    margin-bottom: 16px;
+  }
+
+  .subjects-row {
+    display: grid;
+    grid-template-columns: 2.2rem 1.6fr 0.8fr 0.8fr 1.2fr 2.2rem;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid var(--border-card);
+    border-radius: 14px;
+    position: relative;
+    animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .subjects-row:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(99, 102, 241, 0.2);
+  }
+
+  .subjects-row.fail {
+    border-color: rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.03);
+  }
+
+  .subjects-row.fail:hover {
+    background: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.4);
+  }
+
+  .subjects-row.deleting {
+    animation: slideOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    pointer-events: none;
+  }
+
+  .index-badge {
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.08);
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-label {
+    display: none;
+  }
+
+  /* Grade badges */
+  .grade-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.03em;
+    min-width: 4.8rem;
     box-sizing: border-box;
   }
 
-  .input-group input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-    background: white;
+  .grade-badge.neutral {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-tertiary);
+    border: 1px solid var(--border-card);
   }
 
-  .input-group input::placeholder {
-    color: #9ca3af;
-    font-style: italic;
+  .grade-o { background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25); }
+  .grade-ap { background: rgba(52, 211, 153, 0.12); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.25); }
+  .grade-a { background: rgba(14, 165, 233, 0.12); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.25); }
+  .grade-bp { background: rgba(59, 130, 246, 0.12); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.25); }
+  .grade-b { background: rgba(139, 92, 246, 0.12); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.25); }
+  .grade-c { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.25); }
+  .grade-p { background: rgba(234, 179, 8, 0.12); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.25); }
+  .grade-f { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.25); animation: pulseRed 2s infinite; }
+
+  @keyframes pulseRed {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+    70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
   }
 
-  .subject-input {
-    padding: 12px;
-    border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    font-size: 15px;
-    background: rgba(255, 255, 255, 0.9);
-    transition: all 0.3s ease;
-  }
-
-  .subject-input:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-    background: white;
-  }
-
-  .subject-input::placeholder {
-    color: #9ca3af;
-    font-style: italic;
-  }
-
-  .fail {
-    background: rgba(254, 226, 226, 0.9);
-  }
-
-  .fail input {
-    border-color: #dc2626;
-  }
-
-  .delete {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 12px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s ease;
-  }
-
-  .delete:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.4);
-  }
-
+  /* Buttons */
   button.main {
     width: 100%;
-    padding: 16px;
-    border-radius: 14px;
+    padding: 14px 20px;
+    border-radius: 12px;
     border: none;
-    font-size: 18px;
+    font-family: var(--font-display);
+    font-size: 15px;
     font-weight: 600;
-    margin-top: 12px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
   }
 
-  .add { 
-    background: linear-gradient(135deg, #667eea, #764ba2); 
-    color: white; 
-  }
-
-  .add:hover {
+  button.main:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
   }
 
-  .sgpa { 
-    background: linear-gradient(135deg, #16a34a, #15803d); 
-    color: white; 
+  button.main:active {
+    transform: translateY(0);
   }
 
-  .sgpa:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(22, 163, 74, 0.4);
+  .btn-add {
+    background: var(--btn-add-bg);
+    color: #ffffff;
+  }
+  .btn-add:hover {
+    box-shadow: 0 6px 20px var(--btn-add-shadow);
+    background: var(--btn-add-hover);
   }
 
-  .cgpa { 
-    background: linear-gradient(135deg, #7c3aed, #6d28d9); 
-    color: white; 
-  }
-
-  .cgpa:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
-  }
-
-  .result {
+  .btn-sgpa {
+    background: var(--btn-sgpa-bg);
+    color: #ffffff;
     margin-top: 16px;
-    padding: 18px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    border-radius: 14px;
-    animation: fadeIn 0.5s ease-in;
+  }
+  .btn-sgpa:hover {
+    box-shadow: 0 6px 20px var(--btn-sgpa-shadow);
+    background: var(--btn-sgpa-hover);
   }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+  .btn-cgpa {
+    background: var(--btn-cgpa-bg);
+    color: #ffffff;
+  }
+  .btn-cgpa:hover {
+    box-shadow: 0 6px 20px var(--btn-cgpa-shadow);
+    background: var(--btn-cgpa-hover);
   }
 
-  .app-footer {
-    margin-top: 40px;
-    padding: 20px 16px;
-    text-align: center;
-    font-size: 16px;
-    color: #000000;
-    border-top: 2px solid rgba(0, 0, 0, 0.3);
-    background: rgba(255, 255, 255, 0.9);
+  .btn-delete-all {
+    background: var(--btn-delete-bg);
+    color: #ffffff;
+    margin-top: 20px;
+  }
+  .btn-delete-all:hover {
+    box-shadow: 0 6px 20px var(--btn-delete-shadow);
+    background: var(--btn-delete-hover);
+  }
+
+  .delete-btn {
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .delete-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+    transform: translateY(-2px);
+  }
+
+  /* Results styling */
+  .result-display {
+    margin-top: 20px;
+    padding: 24px;
     border-radius: 16px;
-    backdrop-filter: blur(10px);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   }
 
-  .app-footer span {
-    font-weight: 700;
+  .result-display.hidden {
+    display: none;
+  }
+
+  .result-display .val {
+    font-size: 3.2rem;
+    font-weight: 850;
+    line-height: 1;
+    letter-spacing: -0.06em;
+  }
+
+  .result-display .lbl {
+    font-size: 11px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+
+  .result-display .desc {
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 10px;
+    padding: 4px 14px;
+    border-radius: 30px;
+    display: inline-block;
+  }
+
+  .tier-outstanding {
+    background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 80%);
+    border: 1px solid rgba(16, 185, 129, 0.18);
+    box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.15);
+  }
+  .tier-outstanding .val {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tier-outstanding .desc {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.08);
+  }
+
+  .tier-firstclass {
+    background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 80%);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.15);
+  }
+  .tier-firstclass .val {
+    background: linear-gradient(135deg, #818cf8, #4f46e5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tier-firstclass .desc {
+    color: #6366f1;
+    background: rgba(99, 102, 241, 0.08);
+  }
+
+  .tier-secondclass {
+    background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.06) 0%, transparent 80%);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.1);
+  }
+  .tier-secondclass .val {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tier-secondclass .desc {
+    color: #d97706;
+    background: rgba(245, 158, 11, 0.06);
+  }
+
+  .tier-fail {
+    background: radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 80%);
+    border: 1px solid rgba(239, 68, 68, 0.18);
+    box-shadow: 0 10px 30px -10px rgba(239, 68, 68, 0.15);
+  }
+  .tier-fail .val {
+    background: linear-gradient(135deg, #f87171, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .tier-fail .desc {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+  }
+
+  /* Footer badge */
+  .app-footer {
+    width: 100%;
+    margin-top: 48px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px;
+    background: var(--footer-bg);
+    border: 1px solid var(--footer-border);
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+  }
+
+  .app-footer p {
+    margin: 0;
   }
 
   .instagram-link {
-    color: #000000;
+    color: var(--text-primary);
     text-decoration: none;
-    transition: all 0.3s ease;
-    opacity: 0.8;
+    font-weight: 550;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-size: 14px;
   }
 
-  .instagram-link:hover {
-    color: #E4405F;
-    opacity: 1;
-    text-decoration: none;
+  .instagram-link span {
+    font-weight: 750;
+    color: #6366f1;
   }
 
   .instagram-link svg {
-    display: inline-block;
-    margin-right: 6px;
-    vertical-align: middle;
-    transition: all 0.3s ease;
+    color: #e1306c;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .instagram-link:hover svg {
-    transform: scale(1.05);
+    transform: scale(1.2) rotate(8deg);
   }
 
-  /* Mobile friendly */
-  @media (max-width: 600px) {
-    .app-footer {
-      font-size: 15px;
-      padding: 16px 12px;
+  /* Responsive Rules */
+  @media (max-width: 768px) {
+    .subjects-header-row {
+      display: none;
+    }
+    .subjects-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+    }
+
+    .index-badge {
+      grid-column: span 1;
+      justify-self: start;
+    }
+
+    .delete-btn {
+      grid-column: span 1;
+      justify-self: end;
+    }
+
+    .subject-name-wrapper {
+      grid-column: span 2;
+    }
+
+    .credits-wrapper, .marks-wrapper {
+      grid-column: span 1;
+    }
+
+    .grade-badge-wrapper {
+      grid-column: span 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .grade-badge-wrapper .grade-badge {
+      width: 100%;
+      padding: 8px;
+    }
+
+    .mobile-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
   }
 
-  .green { 
-    background: linear-gradient(135deg, #dcfce7, #bbf7d0); 
-    color: #166534; 
-    border: 1px solid #16a34a;
-  }
-  
-  .red { 
-    background: linear-gradient(135deg, #fee2e2, #fecaca); 
-    color: #991b1b; 
-    border: 1px solid #dc2626;
-  }
-
-  .yellow { 
-    background: linear-gradient(135deg, #fef3c7, #fde68a); 
-    color: #92400e; 
-    border: 1px solid #f59e0b;
+  /* Keyframe Animations */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
-  @media (max-width: 600px) {
-    .header-row, .row {
-      grid-template-columns: 1fr;
+  @keyframes slideOut {
+    to {
+      opacity: 0;
+      transform: translateY(-12px) scale(0.95);
+    }
+  }
+
+  @keyframes popIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
     }
   }
 </style>
@@ -294,105 +716,303 @@
 <body>
 
 <div class="container">
-  <h1>VTU SGPA & CGPA Calculator</h1>
-
-  <div class="card">
-    <h2>Subjects</h2>
-
-    
-    <div id="subjects"></div>
-
-    <button class="main add" onclick="addSubject()">➕ Add Subject</button>
-    <button class="main sgpa" onclick="calculateSGPA()">Calculate SGPA</button>
-    <div id="sgpaResult" class="result"></div>
-  </div>
-
-  <div class="card">
-    <h2>CGPA (from SGPAs)</h2>
-    <div class="input-group">
-      <label for="cgpaInput">Enter SGPAs (comma-separated)</label>
-      <input id="cgpaInput" placeholder="Example: 7.8, 8.2, 6.9">
-    </div>
-    <button class="main cgpa" onclick="calculateCGPA()">Calculate CGPA</button>
-    <div id="cgpaResult" class="result"></div>
-  </div>
-  <div class="card">
-  <h2>🎯 Target CGPA Planner</h2>
-
-  <div class="input-group">
-    <label for="currentCgpa">Current CGPA</label>
-    <input id="currentCgpa" type="number" step="0.01" placeholder="e.g. 7.2">
-  </div>
-
-  <div class="input-group">
-    <label for="semCompleted">Semesters Completed</label>
-    <input id="semCompleted" type="number" placeholder="e.g. 4">
-  </div>
-
-  <div class="input-group">
-    <label for="targetCgpa">Target CGPA</label>
-    <input id="targetCgpa" type="number" step="0.01" placeholder="e.g. 8.0">
-  </div>
-
-  <div class="input-group">
-    <label for="totalSem">Total Semesters</label>
-    <input id="totalSem" type="number" value="8" placeholder="e.g. 8">
-  </div>
-
-  <button class="main cgpa" onclick="calculateTarget()">Calculate Required SGPA</button>
-
-  <div id="targetResult" class="result"></div>
-  <button class="main delete" onclick="clearAll()">Clear All Data</button>
-  <footer class="app-footer">
-  <p>
-    <a href="https://www.instagram.com/_dheeraj_koila_?igsh=MTZxN3hvcjhiZ3JzZw==" target="_blank" class="instagram-link" title="Follow on Instagram">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  <!-- Header with title and theme toggler -->
+  <header class="app-header">
+    <div class="logo-area">
+      <svg class="logo-icon" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+        <path d="M6 6h10"/>
+        <path d="M6 10h10"/>
       </svg>
-      Developed by <span>Dheeraj Koila</span>
-    </a>
-  </p>
-</footer>
-</div>
+      <h1>Dheeraj's Calculation</h1>
+    </div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle light/dark theme">
+      <!-- Sun Icon -->
+      <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <line x1="12" y1="2" x2="12" y2="4"/>
+        <line x1="12" y1="20" x2="12" y2="22"/>
+        <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/>
+        <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
+        <line x1="2" y1="12" x2="4" y2="12"/>
+        <line x1="20" y1="12" x2="22" y2="12"/>
+        <line x1="6.34" y1="17.66" x2="4.93" y2="19.07"/>
+        <line x1="19.07" y1="4.93" x2="17.66" y2="6.34"/>
+      </svg>
+      <!-- Moon Icon -->
+      <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="dashboard-grid">
+    <!-- Left column: SGPA Subjects calculator -->
+    <section class="grid-left">
+      <div class="card card-sgpa">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+            <path d="M6 6h10"/>
+            <path d="M6 10h10"/>
+          </svg>
+          Subjects Calculation
+        </h2>
+        
+        <div class="subjects-header-row">
+          <div>#</div>
+          <div>Subject Name</div>
+          <div>Credits</div>
+          <div>Marks</div>
+          <div>Grade</div>
+          <div></div>
+        </div>
+        
+        <div id="subjects"></div>
+
+        <button class="main btn-add" onclick="addSubject()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Subject
+        </button>
+        <button class="main btn-sgpa" onclick="calculateSGPA()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"/>
+            <line x1="9" y1="22" x2="9" y2="16"/>
+            <line x1="8" y1="6" x2="16" y2="6"/>
+            <line x1="16" y1="10" x2="16" y2="18"/>
+            <circle cx="9" cy="10" r="1"/>
+            <circle cx="9" cy="13" r="1"/>
+          </svg>
+          Calculate SGPA
+        </button>
+        <div id="sgpaResult" class="result-display hidden"></div>
+      </div>
+    </section>
+
+    <!-- Right column: CGPA & Target Planner -->
+    <section class="grid-right">
+      <!-- CGPA Card -->
+      <div class="card card-cgpa">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+            <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+          </svg>
+          CGPA (from SGPAs)
+        </h2>
+        <div class="input-group">
+          <label for="cgpaInput">Enter SGPAs (comma-separated)</label>
+          <input id="cgpaInput" class="input-field" placeholder="Example: 7.8, 8.2, 6.9">
+        </div>
+        <button class="main btn-cgpa" onclick="calculateCGPA()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+            <polyline points="16 7 22 7 22 13"/>
+          </svg>
+          Calculate CGPA
+        </button>
+        <div id="cgpaResult" class="result-display hidden"></div>
+      </div>
+
+      <!-- Target CGPA Planner -->
+      <div class="card card-planner">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+          Target CGPA Planner
+        </h2>
+
+        <div class="input-group">
+          <label for="currentCgpa">Current CGPA</label>
+          <input id="currentCgpa" class="input-field" type="number" step="0.01" placeholder="e.g. 7.2">
+        </div>
+
+        <div class="input-group">
+          <label for="semCompleted">Semesters Completed</label>
+          <input id="semCompleted" class="input-field" type="number" placeholder="e.g. 4">
+        </div>
+
+        <div class="input-group">
+          <label for="targetCgpa">Target CGPA</label>
+          <input id="targetCgpa" class="input-field" type="number" step="0.01" placeholder="e.g. 8.0">
+        </div>
+
+        <div class="input-group">
+          <label for="totalSem">Total Semesters</label>
+          <input id="totalSem" class="input-field" type="number" value="8" placeholder="e.g. 8">
+        </div>
+
+        <button class="main btn-cgpa" onclick="calculateTarget()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+          Calculate Required SGPA
+        </button>
+
+        <div id="targetResult" class="result-display hidden"></div>
+      </div>
+
+      <!-- Action Panel -->
+      <button class="main btn-delete-all" onclick="clearAll()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+          <line x1="10" y1="11" x2="10" y2="17"/>
+          <line x1="14" y1="11" x2="14" y2="17"/>
+        </svg>
+        Clear All Data
+      </button>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>
+      <a href="https://www.instagram.com/_dheeraj_koila_?igsh=MTZxN3hvcjhiZ3JzZw==" target="_blank" class="instagram-link" title="Follow on Instagram">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+        Developed by <span>Dheeraj Koila</span>
+      </a>
+    </p>
+  </footer>
 </div>
 
 <script>
+  // Theme Switching
+  const themeToggleBtn = document.getElementById("themeToggle");
+  const currentTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", currentTheme);
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      const theme = document.documentElement.getAttribute("data-theme");
+      const newTheme = theme === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", newTheme);
+      localStorage.setItem("theme", newTheme);
+    });
+  }
+
+  // Row operations
   function addSubject(data = {}) {
-  const row = document.createElement("div");
-  row.className = "row";
-  row.innerHTML = `
-    <div class="index"></div>
-    <input placeholder="Subject" value="${data.subject || ""}" class="subject-input">
-    <input type="number" placeholder="Credits" value="${data.credits || ""}" class="subject-input">
-    <input type="number" placeholder="Marks" value="${data.marks || ""}" oninput="checkFail(this)" class="subject-input">
-    <button class="delete" onclick="deleteRow(this)">✖</button>
-  `;
+    const container = document.getElementById("subjects");
+    if (!container) return;
 
-  row.querySelectorAll("input").forEach(inp => {
-    inp.addEventListener("input", saveData);
-  });
+    const row = document.createElement("div");
+    row.className = "subjects-row";
+    
+    row.innerHTML = `
+      <div class="index-badge"></div>
+      <div class="field-group subject-name-wrapper">
+        <label class="mobile-label">Subject Name</label>
+        <input type="text" placeholder="e.g. Mathematics" value="${data.subject || ""}" class="input-field subject-name">
+      </div>
+      <div class="field-group credits-wrapper">
+        <label class="mobile-label">Credits</label>
+        <input type="number" placeholder="Credits" value="${data.credits || ""}" class="input-field subject-credits" min="1" max="10">
+      </div>
+      <div class="field-group marks-wrapper">
+        <label class="mobile-label">Marks</label>
+        <input type="number" placeholder="Marks" value="${data.marks || ""}" class="input-field subject-marks" min="0" max="100">
+      </div>
+      <div class="field-group grade-badge-wrapper">
+        <label class="mobile-label">Grade</label>
+        <span class="grade-badge neutral">-</span>
+      </div>
+      <button class="delete-btn" onclick="deleteRow(this)" aria-label="Delete row">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    `;
 
-  document.getElementById("subjects").appendChild(row);
-  reorder();
-  setupEnterNavigation();
-  saveData();
-}
+    // Input listeners to trigger validation/saving
+    row.querySelectorAll("input").forEach(inp => {
+      inp.addEventListener("input", () => {
+        saveData();
+        if (inp.classList.contains("subject-marks")) {
+          updateGradeBadge(inp);
+        }
+      });
+    });
 
-  function deleteRow(btn) {
-    btn.parentElement.remove();
+    container.appendChild(row);
+
+    // Initial validation if data is present
+    const marksInput = row.querySelector(".subject-marks");
+    if (marksInput && data.marks !== undefined) {
+      updateGradeBadge(marksInput);
+    }
+
     reorder();
+    setupEnterNavigation();
     saveData();
   }
 
+  function deleteRow(btn) {
+    const row = btn.closest(".subjects-row");
+    if (!row) return;
+
+    row.classList.add("deleting");
+    row.addEventListener("animationend", () => {
+      row.remove();
+      reorder();
+      saveData();
+    });
+  }
+
   function reorder() {
-    document.querySelectorAll(".index").forEach((el, i) => {
+    document.querySelectorAll(".subjects-row .index-badge").forEach((el, i) => {
       el.textContent = i + 1;
     });
   }
 
-  function checkFail(input) {
-    const row = input.parentElement;
-    if (Number(input.value) < 40 && input.value !== "") {
+  function updateGradeBadge(input) {
+    const row = input.closest(".subjects-row");
+    if (!row) return;
+    const gradeBadge = row.querySelector(".grade-badge");
+    if (!gradeBadge) return;
+
+    const valText = input.value.trim();
+    if (valText === "") {
+      gradeBadge.textContent = "-";
+      gradeBadge.className = "grade-badge neutral";
+      row.classList.remove("fail");
+      return;
+    }
+
+    const marks = Number(valText);
+    if (isNaN(marks) || marks < 0 || valText === "") {
+      gradeBadge.textContent = "-";
+      gradeBadge.className = "grade-badge neutral";
+      row.classList.remove("fail");
+      return;
+    }
+
+    const gp = gradePoint(marks);
+    let gradeText = "";
+    let gradeClass = "";
+
+    if (marks >= 90) { gradeText = "O (10)"; gradeClass = "grade-o"; }
+    else if (marks >= 80) { gradeText = "A+ (9)"; gradeClass = "grade-ap"; }
+    else if (marks >= 70) { gradeText = "A (8)"; gradeClass = "grade-a"; }
+    else if (marks >= 60) { gradeText = "B+ (7)"; gradeClass = "grade-bp"; }
+    else if (marks >= 55) { gradeText = "B (6)"; gradeClass = "grade-b"; }
+    else if (marks >= 50) { gradeText = "C (5)"; gradeClass = "grade-c"; }
+    else if (marks >= 40) { gradeText = "P (4)"; gradeClass = "grade-p"; }
+    else { gradeText = "F (0)"; gradeClass = "grade-f"; }
+
+    gradeBadge.textContent = gradeText;
+    gradeBadge.className = "grade-badge " + gradeClass;
+
+    if (gp === 0) {
       row.classList.add("fail");
     } else {
       row.classList.remove("fail");
@@ -400,7 +1020,7 @@
   }
 
   function setupEnterNavigation() {
-    const inputs = document.querySelectorAll("#subjects input");
+    const inputs = document.querySelectorAll("#subjects input.input-field");
     inputs.forEach((input, i) => {
       input.onkeydown = (e) => {
         if (e.key === "Enter") {
@@ -410,8 +1030,11 @@
           } else {
             addSubject();
             setTimeout(() => {
-              document.querySelectorAll("#subjects input")[inputs.length].focus();
-            }, 0);
+              const newInputs = document.querySelectorAll("#subjects input.input-field");
+              if (newInputs[inputs.length]) {
+                newInputs[inputs.length].focus();
+              }
+            }, 50);
           }
         }
       };
@@ -429,131 +1052,217 @@
     return 0;
   }
 
+  // Calculation Results Renderers
+  function showResult(containerId, value, label, subtitle) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+
+    el.classList.remove("hidden");
+
+    let tierClass = "tier-secondclass";
+    if (value >= 7.75) {
+      tierClass = "tier-outstanding";
+    } else if (value >= 6.75) {
+      tierClass = "tier-firstclass";
+    } else if (value >= 5.0) {
+      tierClass = "tier-secondclass";
+    } else {
+      tierClass = "tier-fail";
+    }
+
+    el.className = `result-display ${tierClass}`;
+    el.innerHTML = `
+      <div class="val">${value}</div>
+      <div class="lbl">${label}</div>
+      ${subtitle ? `<div class="desc">${subtitle}</div>` : ""}
+    `;
+  }
+
+  function showTargetResult(message, isSuccess, isError, requiredSgpa) {
+    const el = document.getElementById("targetResult");
+    if (!el) return;
+
+    el.classList.remove("hidden");
+
+    let tierClass = "tier-firstclass";
+    let displayValue = "-";
+    let labelText = "REQUIRED AVERAGE SGPA";
+    let descText = "";
+
+    if (isError) {
+      tierClass = "tier-fail";
+      displayValue = "Err";
+      labelText = "PLANNER ERROR";
+      descText = message;
+    } else if (requiredSgpa !== undefined) {
+      displayValue = requiredSgpa.toFixed(2);
+      if (requiredSgpa > 8.5) {
+        tierClass = "tier-fail";
+        descText = "⚠️ High effort required! Stay focused.";
+      } else if (requiredSgpa > 7.0) {
+        tierClass = "tier-secondclass";
+        descText = "Moderate effort required.";
+      } else {
+        tierClass = "tier-outstanding";
+        descText = "Highly achievable! Keep going.";
+      }
+    } else {
+      tierClass = "tier-outstanding";
+      displayValue = "🎉";
+      labelText = "TARGET SECURED";
+      descText = message;
+    }
+
+    el.className = `result-display ${tierClass}`;
+    el.innerHTML = `
+      <div class="val">${displayValue}</div>
+      <div class="lbl">${labelText}</div>
+      <div class="desc">${descText}</div>
+    `;
+  }
+
+  // Calculations
   function calculateSGPA() {
-    const rows = document.querySelectorAll("#subjects .row");
+    const rows = document.querySelectorAll("#subjects .subjects-row");
     let credits = 0, total = 0;
+    let hasFail = false;
 
     rows.forEach(r => {
-      const c = Number(r.children[2].value);
-      const m = Number(r.children[3].value);
+      const cInput = r.querySelector(".subject-credits");
+      const mInput = r.querySelector(".subject-marks");
+      const c = Number(cInput ? cInput.value : 0);
+      const m = Number(mInput ? mInput.value : 0);
       if (c) {
         credits += c;
-        total += c * gradePoint(m);
+        const gp = gradePoint(m);
+        if (gp === 0) hasFail = true;
+        total += c * gp;
       }
     });
 
     if (!credits) return;
-    const sgpa = (total / credits).toFixed(2);
-    show("sgpaResult", "SGPA: " + sgpa, sgpa);
+    const sgpa = Number((total / credits).toFixed(2));
+
+    let subtitle = "";
+    if (hasFail) {
+      subtitle = "F Grade in some subjects ⚠️";
+    } else if (sgpa >= 7.75) {
+      subtitle = "First Class with Distinction (FCD) 🌟";
+    } else if (sgpa >= 6.75) {
+      subtitle = "First Class (FC) 📈";
+    } else if (sgpa >= 5.75) {
+      subtitle = "Second Class (SC)";
+    } else if (sgpa >= 5.0) {
+      subtitle = "Pass Class";
+    } else {
+      subtitle = "Fails to meet passing standards";
+    }
+
+    showResult("sgpaResult", sgpa, "Calculated SGPA", subtitle);
   }
 
   function calculateCGPA() {
     const vals = document.getElementById("cgpaInput").value
       .split(",")
       .map(v => Number(v.trim()))
-      .filter(v => !isNaN(v));
+      .filter(v => !isNaN(v) && v > 0);
 
     if (!vals.length) return;
-    const cgpa = (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2);
-    show("cgpaResult", "CGPA: " + cgpa, cgpa);
+    const cgpa = Number((vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2));
+
+    let subtitle = "";
+    if (cgpa >= 7.75) {
+      subtitle = "First Class with Distinction (FCD) 🌟";
+    } else if (cgpa >= 6.75) {
+      subtitle = "First Class (FC) 📈";
+    } else if (cgpa >= 5.75) {
+      subtitle = "Second Class (SC)";
+    } else if (cgpa >= 5.0) {
+      subtitle = "Pass Class";
+    } else {
+      subtitle = "Academic probation / Fail";
+    }
+
+    showResult("cgpaResult", cgpa, "Calculated CGPA", subtitle);
   }
 
-  function show(id, text, value) {
-    const el = document.getElementById(id);
-    el.textContent = text;
-    el.className = "result " + (value >= 7 ? "green" : "red");
-  }
   function calculateTarget() {
-  const current = Number(document.getElementById("currentCgpa").value);
-  const done = Number(document.getElementById("semCompleted").value);
-  const target = Number(document.getElementById("targetCgpa").value);
-  const total = Number(document.getElementById("totalSem").value);
+    const current = Number(document.getElementById("currentCgpa").value);
+    const done = Number(document.getElementById("semCompleted").value);
+    const target = Number(document.getElementById("targetCgpa").value);
+    const total = Number(document.getElementById("totalSem").value);
 
-  const resultBox = document.getElementById("targetResult");
+    if (
+      current <= 0 || target <= 0 ||
+      done <= 0 || total <= 0 ||
+      done >= total || current > 10 || target > 10
+    ) {
+      showTargetResult("Please enter valid positive values (Completed Semesters < Total Semesters)", false, true);
+      return;
+    }
 
-  if (
-    current <= 0 || target <= 0 ||
-    done <= 0 || total <= 0 ||
-    done >= total
-  ) {
-    resultBox.textContent = "Please enter valid values";
-    resultBox.className = "result red";
-    return;
+    const required = ((target * total) - (current * done)) / (total - done);
+
+    if (required <= 0) {
+      showTargetResult("🎉 Target already achievable with current CGPA", true, false);
+      return;
+    }
+
+    if (required > 10) {
+      showTargetResult("❌ Target CGPA not achievable (Required SGPA > 10)", false, true);
+      return;
+    }
+
+    showTargetResult("", true, false, required);
   }
 
-  const required =
-    ((target * total) - (current * done)) / (total - done);
-
-  if (required <= 0) {
-    resultBox.textContent = "🎉 Target already achievable with current CGPA";
-    resultBox.className = "result green";
-    return;
-  }
-
-  if (required > 10) {
-    resultBox.textContent =
-      "❌ Target CGPA not realistically achievable (Required SGPA > 10)";
-    resultBox.className = "result red";
-    return;
-  }
-
-  let levelClass = "green";
-  if (required > 7) levelClass = "yellow";
-  if (required > 8.5) levelClass = "red";
-
-  resultBox.textContent =
-    "Required Average SGPA: " + required.toFixed(2);
-
-  resultBox.className = "result " + levelClass;
-}
-function saveData() {
-  const subjects = [];
-  document.querySelectorAll("#subjects .row").forEach(r => {
-    subjects.push({
-      subject: r.children[1].value,
-      credits: r.children[2].value,
-      marks: r.children[3].value
+  // Persistence
+  function saveData() {
+    const subjects = [];
+    document.querySelectorAll("#subjects .subjects-row").forEach(r => {
+      const nameEl = r.querySelector(".subject-name");
+      const creditsEl = r.querySelector(".subject-credits");
+      const marksEl = r.querySelector(".subject-marks");
+      if (nameEl && creditsEl && marksEl) {
+        subjects.push({
+          subject: nameEl.value,
+          credits: creditsEl.value,
+          marks: marksEl.value
+        });
+      }
     });
-  });
 
-  localStorage.setItem("subjects", JSON.stringify(subjects));
-  localStorage.setItem("cgpaInput", document.getElementById("cgpaInput")?.value || "");
-  localStorage.setItem("currentCgpa", document.getElementById("currentCgpa")?.value || "");
-  localStorage.setItem("semCompleted", document.getElementById("semCompleted")?.value || "");
-  localStorage.setItem("targetCgpa", document.getElementById("targetCgpa")?.value || "");
-  localStorage.setItem("totalSem", document.getElementById("totalSem")?.value || "");
-}
-window.onload = () => {
-  const savedSubjects = JSON.parse(localStorage.getItem("subjects") || "[]");
-
-  if (savedSubjects.length) {
-    document.getElementById("subjects").innerHTML = "";
-    savedSubjects.forEach(s => addSubject(s));
-  } else {
-    addSubject();
+    localStorage.setItem("subjects", JSON.stringify(subjects));
+    localStorage.setItem("cgpaInput", document.getElementById("cgpaInput")?.value || "");
+    localStorage.setItem("currentCgpa", document.getElementById("currentCgpa")?.value || "");
+    localStorage.setItem("semCompleted", document.getElementById("semCompleted")?.value || "");
+    localStorage.setItem("targetCgpa", document.getElementById("targetCgpa")?.value || "");
+    localStorage.setItem("totalSem", document.getElementById("totalSem")?.value || "");
   }
 
-  document.getElementById("cgpaInput").value =
-    localStorage.getItem("cgpaInput") || "";
+  window.onload = () => {
+    const savedSubjects = JSON.parse(localStorage.getItem("subjects") || "[]");
 
-  document.getElementById("currentCgpa").value =
-    localStorage.getItem("currentCgpa") || "";
+    if (savedSubjects.length) {
+      document.getElementById("subjects").innerHTML = "";
+      savedSubjects.forEach(s => addSubject(s));
+    } else {
+      addSubject();
+    }
 
-  document.getElementById("semCompleted").value =
-    localStorage.getItem("semCompleted") || "";
+    document.getElementById("cgpaInput").value = localStorage.getItem("cgpaInput") || "";
+    document.getElementById("currentCgpa").value = localStorage.getItem("currentCgpa") || "";
+    document.getElementById("semCompleted").value = localStorage.getItem("semCompleted") || "";
+    document.getElementById("targetCgpa").value = localStorage.getItem("targetCgpa") || "";
+    document.getElementById("totalSem").value = localStorage.getItem("totalSem") || "8";
+  };
 
-  document.getElementById("targetCgpa").value =
-    localStorage.getItem("targetCgpa") || "";
-
-  document.getElementById("totalSem").value =
-    localStorage.getItem("totalSem") || "8";
-};
-function clearAll() {
-  if (confirm("This will delete all saved data. Continue?")) {
-    localStorage.clear();
-    location.reload();
+  function clearAll() {
+    if (confirm("This will delete all saved data. Continue?")) {
+      localStorage.clear();
+      location.reload();
+    }
   }
-}
 </script>
 
 </body>
